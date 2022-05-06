@@ -55,4 +55,10 @@ public class BookService {
     private boolean hasAuthor(Book book, String author) {
         return author == null || book.getAuthor().contains(author);
     }
+
+    public Book createBook(Book book) {
+        books.add(book);
+
+        return book;
+    }
 }
