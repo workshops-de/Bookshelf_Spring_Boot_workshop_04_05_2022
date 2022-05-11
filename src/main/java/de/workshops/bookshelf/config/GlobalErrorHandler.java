@@ -1,4 +1,4 @@
-package de.workshops.bookshelf.configuration;
+package de.workshops.bookshelf.config;
 
 import de.workshops.bookshelf.book.BookException;
 import lombok.extern.slf4j.Slf4j;
