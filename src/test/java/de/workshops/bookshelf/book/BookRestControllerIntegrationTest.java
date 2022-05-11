@@ -46,7 +46,7 @@ class BookRestControllerIntegrationTest {
         @Bean
         public ObjectMapper mapper() {
             ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
+            mapper.configure(SerializationFeature.INDENT_OUTPUT, false);
 
             return mapper;
         }
