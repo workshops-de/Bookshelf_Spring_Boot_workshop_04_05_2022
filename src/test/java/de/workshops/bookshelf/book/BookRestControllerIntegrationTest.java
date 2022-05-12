@@ -37,6 +37,9 @@ class BookRestControllerIntegrationTest {
     @Autowired
     private BookRestController bookRestController;
 
+    @Autowired
+    private BookRepository bookRepository;
+
     @LocalServerPort
     private int port;
 
@@ -62,13 +65,13 @@ class BookRestControllerIntegrationTest {
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get(BookRestController.REQUEST_URL))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(4)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[2].title", is("Clean Code")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(3)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[2].title", is("Coding for Fun")))
                 .andReturn();
 
         Book[] books = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Book[].class);
-        assertEquals(4, books.length);
-        assertEquals("Clean Code", books[2].getTitle());
+        assertEquals(3, books.length);
+        assertEquals("Coding for Fun", books[2].getTitle());
     }
 
     @Test
@@ -95,7 +98,7 @@ class BookRestControllerIntegrationTest {
                 then().
                 log().all().
                 statusCode(200).
-                body("size()", is(4)).
+                body("size()", is(3)).
                 body("author[0]", equalTo("Erich Gamma"));
     }
 
@@ -104,6 +107,7 @@ class BookRestControllerIntegrationTest {
         RestAssuredMockMvc.standaloneSetup(bookRestController);
 
         Book book = new Book();
+        book.setId(42);
         book.setAuthor("Eric Evans");
         book.setTitle("Domain-Driven Design: Tackling Complexity in the Heart of Software");
         book.setIsbn("978-0321125217");

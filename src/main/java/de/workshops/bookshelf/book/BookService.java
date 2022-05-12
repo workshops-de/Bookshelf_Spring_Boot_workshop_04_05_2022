@@ -4,9 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -16,33 +13,20 @@ public class BookService {
 
     private final BookRepository bookRepository;
 
-    private List<Book> books;
-
-    @PostConstruct
-    public void init() {
-        books = Collections.emptyList();
-
-        try {
-            books = bookRepository.findAll();
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
-    }
-
     public List<Book> getBooks() {
-        return books;
+        return bookRepository.findAll();
     }
 
     public Book getSingleBook(String isbn) throws BookException {
-        return books.stream().filter(book -> hasIsbn(book, isbn)).findFirst().orElseThrow(BookException::new);
+        return getBooks().stream().filter(book -> hasIsbn(book, isbn)).findFirst().orElseThrow(BookException::new);
     }
 
     public Book searchBookByAuthor(String author) throws BookException {
-        return books.stream().filter(book -> hasAuthor(book, author)).findFirst().orElseThrow(BookException::new);
+        return getBooks().stream().filter(book -> hasAuthor(book, author)).findFirst().orElseThrow(BookException::new);
     }
 
     public List<Book> searchBooks(BookSearchRequest request) {
-        return books.stream()
+        return getBooks().stream()
                 .filter(book -> hasAuthor(book, request.getAuthor()))
                 .filter(book -> hasIsbn(book, request.getIsbn()))
                 .toList();
@@ -57,7 +41,7 @@ public class BookService {
     }
 
     public Book createBook(Book book) {
-        books.add(book);
+        bookRepository.save(book);
 
         return book;
     }

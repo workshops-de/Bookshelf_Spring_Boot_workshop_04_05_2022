@@ -58,3 +58,8 @@ build/
 
 ### macOS ###
 .DS_Store
+
+### H2 database files ###
+/testdb.lock.db
+/testdb.mv.db
+/testdb.trace.db

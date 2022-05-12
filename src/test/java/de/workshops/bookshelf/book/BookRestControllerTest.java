@@ -16,6 +16,6 @@ class BookRestControllerTest {
     @Test
     void getAllBooks() {
         assertNotNull(bookRestController.getAllBooks().getBody());
-        assertEquals(4, bookRestController.getAllBooks().getBody().size());
+        assertEquals(3, bookRestController.getAllBooks().getBody().size());
     }
 }

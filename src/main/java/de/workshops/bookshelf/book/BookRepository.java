@@ -1,24 +1,14 @@
 package de.workshops.bookshelf.book;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.ResourceLoader;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import java.io.IOException;
 import java.util.List;
 
 @Repository
-@RequiredArgsConstructor
-public class BookRepository {
+public interface BookRepository extends CrudRepository<Book, Integer> {
 
-    private final ObjectMapper mapper;
+    Book findByIsbn(String isbn);
 
-    private final ResourceLoader resourceLoader;
-
-    public List<Book> findAll() throws IOException {
-        final var resource = resourceLoader.getResource("classpath:books.json");
-        return mapper.readValue(resource.getInputStream(), new TypeReference<>() {});
-    }
+    List<Book> findAll();
 }
