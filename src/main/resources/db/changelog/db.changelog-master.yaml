@@ -92,4 +92,3 @@ databaseChangeLog:
             sql: >
               UPDATE bookshelf_user SET password = 'password'
               WHERE username = 'dbUser';
-              
