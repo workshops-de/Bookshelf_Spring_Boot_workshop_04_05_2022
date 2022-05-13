@@ -18,8 +18,8 @@ spring:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     open-in-view: false
-    generate-ddl: true
-    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: validate
   sql:
     init:
       # The default value is 'embedded', which only works for in-memory databases.
@@ -28,3 +28,7 @@ spring:
   h2:
     console:
       enabled: true
+  security:
+    user:
+      name: user
+      password: password

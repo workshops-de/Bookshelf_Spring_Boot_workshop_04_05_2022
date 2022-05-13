@@ -13,11 +13,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
+import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -38,7 +42,7 @@ class BookRestControllerIntegrationTest {
     private BookRestController bookRestController;
 
     @Autowired
-    private BookRepository bookRepository;
+    private FilterChainProxy springSecurityFilterChain;
 
     @LocalServerPort
     private int port;
@@ -61,6 +65,7 @@ class BookRestControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser
     void getAllBooks() throws Exception {
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get(BookRestController.REQUEST_URL))
                 .andDo(MockMvcResultHandlers.print())
@@ -75,8 +80,13 @@ class BookRestControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser
     void testWithRestAssuredMockMvc() {
-        RestAssuredMockMvc.standaloneSetup(bookRestController);
+        RestAssuredMockMvc.standaloneSetup(
+                MockMvcBuilders
+                        .standaloneSetup(bookRestController)
+                        .apply(SecurityMockMvcConfigurers.springSecurity(springSecurityFilterChain))
+        );
         RestAssuredMockMvc.
                 given().
                 log().all().
@@ -92,6 +102,7 @@ class BookRestControllerIntegrationTest {
     void testWithRestAssured() {
         RestAssured.
                 given().
+                auth().basic("dbUser", "workshops").
                 log().all().
                 when().
                 get(BookRestController.REQUEST_URL).
@@ -103,11 +114,15 @@ class BookRestControllerIntegrationTest {
     }
 
     @Test
+    @WithMockUser
     void createBook() {
-        RestAssuredMockMvc.standaloneSetup(bookRestController);
+        RestAssuredMockMvc.standaloneSetup(
+                MockMvcBuilders
+                        .standaloneSetup(bookRestController)
+                        .apply(SecurityMockMvcConfigurers.springSecurity(springSecurityFilterChain))
+        );
 
         Book book = new Book();
-        book.setId(42);
         book.setAuthor("Eric Evans");
         book.setTitle("Domain-Driven Design: Tackling Complexity in the Heart of Software");
         book.setIsbn("978-0321125217");
