@@ -23,7 +23,7 @@ spring:
   sql:
     init:
       # The default value is 'embedded', which only works for in-memory databases.
-      # Since we're using a file-based database  here, we now need to set this to 'always'.
+      # Since we're using a file-based database here, we now need to set this to 'always'.
       mode: always
   h2:
     console:
